@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo"
 	"go.uber.org/zap"
 	"main/internal/ip"
+	"main/internal/tools"
 	"net/http"
 	"strconv"
 	"time"
@@ -25,6 +26,16 @@ func (Ip IpHandler) RegisterTime(rwContext echo.Context) error {
 	ip := rwContext.Request().Header.Get("X-Forwarded-For")
 
 	retryAfter, err := Ip.ipUse.RegisterIp(ip, timer)
+
+	if err == tools.WrongIpFormat {
+		Ip.logger.Debug(
+			zap.String("ID", rId),
+			zap.String("ERROR", err.Error()),
+			zap.Int("ANSWER STATUS", http.StatusConflict),
+		)
+
+		return rwContext.NoContent(http.StatusConflict)
+	}
 
 	if err != nil {
 		Ip.logger.Debug(

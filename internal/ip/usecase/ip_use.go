@@ -23,7 +23,7 @@ func (Ip IpUseCase) RegisterIp(ip string, reqTime time.Time) (int, error) {
 	_, netIp, err := net.ParseCIDR(ip + "/" + Ip.mask)
 
 	if err != nil {
-		return 0, err
+		return 0, tools.WrongIpFormat
 	}
 
 	err = Ip.ipRepo.CreateFirstIpMask(netIp.String())

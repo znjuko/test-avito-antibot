@@ -9,6 +9,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"main/internal/ip/delivery/mock"
+	"main/internal/tools"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,7 +25,7 @@ func TestIpHandler_Reset(t *testing.T) {
 	defer prLogger.Sync()
 	ipHandler := NewIpHandler(ipUseMock, logger)
 
-	errs := []error{errors.New("smth happend"), nil}
+	errs := []error{errors.New("smth happend"), nil }
 	expectedBehaviour := []int{http.StatusConflict, http.StatusOK}
 
 	for iter, _ := range expectedBehaviour {
@@ -55,8 +56,8 @@ func TestIpHandler_RegisterTime(t *testing.T) {
 	defer prLogger.Sync()
 	ipHandler := NewIpHandler(ipUseMock, logger)
 
-	errs := []error{errors.New("smth happend"), nil}
-	expectedBehaviour := []int{http.StatusTooManyRequests, http.StatusOK}
+	errs := []error{errors.New("smth happend"), nil, tools.WrongIpFormat}
+	expectedBehaviour := []int{http.StatusTooManyRequests, http.StatusCreated , http.StatusConflict}
 
 	for iter, _ := range expectedBehaviour {
 		ip := uuid.NewV4()

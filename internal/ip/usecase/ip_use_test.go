@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/golang/mock/gomock"
 	"main/internal/ip/usecase/mock"
+	"main/internal/tools"
 	_errors "main/internal/tools"
 	"testing"
 	"time"
@@ -37,7 +38,7 @@ func TestIpUseCase_RegisterIp(t *testing.T) {
 	_time := time.Now()
 
 	wrongIp := "123123123123"
-	if val, err := ipUse.RegisterIp(wrongIp, _time); err == nil || val != 0 {
+	if val, err := ipUse.RegisterIp(wrongIp, _time); err != tools.WrongIpFormat || val != 0 {
 		t.Error(" not expected behaviour at converting ip", err, val)
 	}
 
